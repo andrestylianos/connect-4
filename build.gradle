@@ -38,6 +38,6 @@ dependencies {
 }
 
 bootRepackage {
-    mainClass = 'conf.ConnectFourConfiguration'
+    mainClass = 'connect4.conf.ConnectFourConfiguration'
     excludeDevtools = true
 }
