@@ -41,3 +41,10 @@ bootRepackage {
     mainClass = 'connect4.conf.ConnectFourConfiguration'
     excludeDevtools = true
 }
+
+test {
+    testLogging {
+        events "passed", "failed"
+        exceptionFormat "full"
+    }
+}
