@@ -19,4 +19,9 @@ public class BoardState {
     public Disc getLastPlayer() {
         return lastPlayer;
     }
+
+    public BoardSize getBoardSize() {
+        return boardSize;
+    }
+
 }

@@ -1,5 +1,6 @@
 package connect4.services;
 
+import connect4.exceptions.InvalidMoveException;
 import connect4.models.BoardSize;
 import connect4.models.BoardState;
 import connect4.models.Disc;
@@ -20,8 +21,23 @@ public class BoardService {
         return new BoardState(boardSize, discs, Disc.EMPTY);
     }
 
-    public BoardState doPlayerMove(PlayerMove move, BoardState boardState) {
-        return null;
+    public BoardState doPlayerMove(PlayerMove move, BoardState boardState) throws InvalidMoveException {
+
+        if(!validateMove(move, boardState)) {
+            throw new InvalidMoveException();
+        }
+
+        Disc[][] discs = boardState.getDiscs();
+
+        for(int x = 0; x<boardState.getBoardSize().getVerticalSize(); x++) {
+            if(discs[move.getColumn()][x] == Disc.EMPTY) {
+                discs[move.getColumn()][x] = move.getDisc();
+                break;
+            }
+        }
+
+        return new BoardState(boardState.getBoardSize(), discs, move.getDisc());
+
     }
 
     protected boolean validateMove(PlayerMove move, BoardState boardState) {
