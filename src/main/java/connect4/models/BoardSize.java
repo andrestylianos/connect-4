@@ -4,20 +4,20 @@ public enum BoardSize {
 
     SIZE_DEFAULT(7,6);
 
-    private final int columnSize;
-    private final int rowSize;
+    private final int horizontalSize;
+    private final int verticalSize;
 
-    BoardSize(int columnSize, int rowSize) {
-        this.columnSize = columnSize;
-        this.rowSize = rowSize;
+    BoardSize(int horizontalSize, int verticalSize) {
+        this.horizontalSize = horizontalSize;
+        this.verticalSize = verticalSize;
     }
 
-    public int getColumnSize(){
-        return this.columnSize;
+    public int getHorizontalSize(){
+        return this.horizontalSize;
     }
 
-    public int getRowSize(){
-        return this.rowSize;
+    public int getVerticalSize(){
+        return this.verticalSize;
     }
 
 }
