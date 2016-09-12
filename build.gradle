@@ -34,8 +34,7 @@ dependencies {
     // Development
     compile("org.springframework.boot:spring-boot-devtools")
     // Testing
-    testCompile("junit:junit:4.12")
-    testCompile("org.mockito:mockito-core:1.+")
+    testCompile("org.springframework.boot:spring-boot-starter-test")
 }
 
 bootRepackage {

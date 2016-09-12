@@ -7,9 +7,11 @@ import connect4.models.BoardSize;
 import connect4.models.BoardState;
 import connect4.enums.Disc;
 import connect4.models.PlayerMove;
+import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 
+@Service
 public class BoardService {
 
     public BoardState initializeBoard(BoardSize boardSize) {
