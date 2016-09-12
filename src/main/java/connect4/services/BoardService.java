@@ -7,12 +7,16 @@ import connect4.models.BoardSize;
 import connect4.models.BoardState;
 import connect4.enums.Disc;
 import connect4.models.PlayerMove;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 
 @Service
 public class BoardService {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public BoardState initializeBoard(BoardSize boardSize) {
 
@@ -28,6 +32,7 @@ public class BoardService {
     public BoardState doPlayerMove(PlayerMove move, BoardState boardState) throws InvalidMoveException, FinishedGameException {
 
         if (!validateMove(move, boardState)) {
+            logger.error("An invalid move was tried");
             throw new InvalidMoveException();
         }
 
@@ -57,6 +62,7 @@ public class BoardService {
     protected boolean validateMove(PlayerMove move, BoardState boardState) throws FinishedGameException {
 
         if (boardState.getGameState() != GameState.ACTIVE) {
+            logger.error("Trying to play in a finished game");
             throw new FinishedGameException();
         }
 
