@@ -30,6 +30,8 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-jetty")
     // Actuator
     compile("org.springframework.boot:spring-boot-starter-actuator")
+    // Data
+    compile("org.springframework.boot:spring-boot-starter-redis")
 
     // Development
     compile("org.springframework.boot:spring-boot-devtools")

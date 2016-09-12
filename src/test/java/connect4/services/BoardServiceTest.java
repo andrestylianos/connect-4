@@ -1,6 +1,7 @@
 package connect4.services;
 
 import connect4.conf.ConnectFourConfiguration;
+import connect4.conf.RedisConfig;
 import connect4.enums.GameState;
 import connect4.exceptions.FinishedGameException;
 import connect4.exceptions.InvalidMoveException;
@@ -22,7 +23,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = ConnectFourConfiguration.class)
+@SpringBootTest(classes = {ConnectFourConfiguration.class, RedisConfig.class})
 public class BoardServiceTest {
 
     private static BoardSize boardSize;
