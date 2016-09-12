@@ -1,4 +1,4 @@
-package connect4.models;
+package connect4.enums;
 
 public enum Disc {
 

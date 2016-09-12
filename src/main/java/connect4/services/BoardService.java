@@ -1,9 +1,11 @@
 package connect4.services;
 
+import connect4.enums.GameState;
+import connect4.exceptions.FinishedGameException;
 import connect4.exceptions.InvalidMoveException;
 import connect4.models.BoardSize;
 import connect4.models.BoardState;
-import connect4.models.Disc;
+import connect4.enums.Disc;
 import connect4.models.PlayerMove;
 
 import java.util.Arrays;
@@ -18,10 +20,10 @@ public class BoardService {
             Arrays.fill(discRow, Disc.EMPTY);
         }
 
-        return new BoardState(boardSize, discs, Disc.EMPTY);
+        return new BoardState(boardSize, discs, Disc.EMPTY, GameState.ACTIVE);
     }
 
-    public BoardState doPlayerMove(PlayerMove move, BoardState boardState) throws InvalidMoveException {
+    public BoardState doPlayerMove(PlayerMove move, BoardState boardState) throws InvalidMoveException, FinishedGameException {
 
         if(!validateMove(move, boardState)) {
             throw new InvalidMoveException();
@@ -36,11 +38,19 @@ public class BoardService {
             }
         }
 
-        return new BoardState(boardState.getBoardSize(), discs, move.getDisc());
+        return new BoardState(boardState.getBoardSize(), discs, move.getDisc(), classifyState(boardState));
 
     }
 
-    protected boolean validateMove(PlayerMove move, BoardState boardState) {
+    public GameState classifyState(BoardState boardState) {
+        return GameState.ACTIVE;
+    }
+
+    protected boolean validateMove(PlayerMove move, BoardState boardState) throws FinishedGameException{
+
+        if (boardState.getGameState() != GameState.ACTIVE) {
+            throw new FinishedGameException();
+        }
 
         if (move.getDisc() == boardState.getLastPlayer()) {
             return false;

@@ -1,9 +1,11 @@
 package connect4.services;
 
+import connect4.enums.GameState;
+import connect4.exceptions.FinishedGameException;
 import connect4.exceptions.InvalidMoveException;
 import connect4.models.BoardSize;
 import connect4.models.BoardState;
-import connect4.models.Disc;
+import connect4.enums.Disc;
 import connect4.models.PlayerMove;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,7 +44,7 @@ public class BoardServiceTest {
         PlayerMove move = new PlayerMove(Disc.PLAYER_ONE, 0);
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
         Arrays.fill(discs[0],Disc.PLAYER_TWO);
-        BoardState boardState = new BoardState(boardSize, discs, Disc.PLAYER_TWO);
+        BoardState boardState = new BoardState(boardSize, discs, Disc.PLAYER_TWO, GameState.ACTIVE);
 
         assertFalse("Player should not be able to add disc to a full column", boardService.validateMove(move, boardState));
     }
@@ -56,9 +58,22 @@ public class BoardServiceTest {
             Arrays.fill(discRow, Disc.EMPTY);
         }
 
-        BoardState boardState = new BoardState(boardSize, discs, Disc.PLAYER_ONE);
+        BoardState boardState = new BoardState(boardSize, discs, Disc.PLAYER_ONE, GameState.ACTIVE);
 
         assertFalse("Player should not be able to play two times in a row", boardService.validateMove(move, boardState));
+    }
+
+    @Test(expected = FinishedGameException.class)
+    public void validateShouldThrowExceptionIfGameFinished() throws Exception {
+
+        PlayerMove move = new PlayerMove(Disc.PLAYER_ONE, 0);
+        Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
+        for(Disc[] discRow: discs){
+            Arrays.fill(discRow, Disc.EMPTY);
+        }
+
+        BoardState boardState = new BoardState(boardSize, discs, Disc.PLAYER_ONE, GameState.PLAYER_ONE_WIN);
+        boardService.validateMove(move, boardState);
     }
 
     @Test
@@ -71,7 +86,7 @@ public class BoardServiceTest {
         Arrays.fill(discs[0],Disc.PLAYER_TWO);
         discs[0][boardSize.getVerticalSize()-1] = Disc.EMPTY;
 
-        BoardState boardState = new BoardState(boardSize, discs, Disc.PLAYER_TWO);
+        BoardState boardState = new BoardState(boardSize, discs, Disc.PLAYER_TWO, GameState.ACTIVE);
 
         assertTrue("Player should be able to make a move that is valid", boardService.validateMove(move, boardState));
     }
@@ -82,7 +97,7 @@ public class BoardServiceTest {
         PlayerMove move = new PlayerMove(Disc.PLAYER_ONE, 0);
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
         Arrays.fill(discs[0],Disc.PLAYER_TWO);
-        BoardState boardState = new BoardState(boardSize, discs, Disc.PLAYER_TWO);
+        BoardState boardState = new BoardState(boardSize, discs, Disc.PLAYER_TWO, GameState.ACTIVE);
 
         boardService.doPlayerMove(move, boardState);
     }
@@ -96,7 +111,7 @@ public class BoardServiceTest {
         Arrays.fill(discs[0],Disc.PLAYER_TWO);
         discs[0][boardSize.getVerticalSize()-1] = Disc.EMPTY;
 
-        BoardState boardState = new BoardState(boardSize, discs, Disc.PLAYER_TWO);
+        BoardState boardState = new BoardState(boardSize, discs, Disc.PLAYER_TWO, GameState.ACTIVE);
         BoardState nextState = boardService.doPlayerMove(move, boardState);
 
         assertEquals("Service should update the board after applying the move", Disc.PLAYER_ONE, nextState.getDiscs()[0][boardSize.getVerticalSize()-1]);
