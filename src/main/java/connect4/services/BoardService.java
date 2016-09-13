@@ -2,6 +2,7 @@ package connect4.services;
 
 import connect4.enums.GameState;
 import connect4.exceptions.FinishedGameException;
+import connect4.exceptions.InconsistentBoardStateException;
 import connect4.exceptions.InvalidMoveException;
 import connect4.models.BoardSize;
 import connect4.models.BoardState;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.UUID;
 
 @Service
 public class BoardService {
@@ -26,10 +28,10 @@ public class BoardService {
             Arrays.fill(discRow, Disc.EMPTY);
         }
 
-        return new BoardState(boardSize, discs, Disc.EMPTY, GameState.ACTIVE);
+        return new BoardState(UUID.randomUUID(), boardSize, discs, Disc.EMPTY, GameState.ACTIVE);
     }
 
-    public BoardState doPlayerMove(PlayerMove move, BoardState boardState) throws InvalidMoveException, FinishedGameException {
+    public BoardState doPlayerMove(PlayerMove move, BoardState boardState) throws InvalidMoveException, FinishedGameException, InconsistentBoardStateException {
 
         if (!validateMove(move, boardState)) {
             logger.error("An invalid move was tried");
@@ -45,15 +47,26 @@ public class BoardService {
             }
         }
 
-        return new BoardState(boardState.getBoardSize(), discs, move.getDisc(), classifyState(boardState));
+        return new BoardState(boardState.getId(), boardState.getBoardSize(), discs, move.getDisc(), classifyState(boardState, move.getDisc()));
 
     }
 
-    public GameState classifyState(BoardState boardState) {
+    public GameState classifyState(BoardState boardState, Disc player) throws InconsistentBoardStateException {
 
-        if (checkActiveGame(boardState.getDiscs())) {
-            return GameState.ACTIVE;
+        if (checkWinningGame(boardState.getDiscs())) {
+            switch (player){
+                case PLAYER_ONE:
+                    return GameState.PLAYER_ONE_WIN;
+                case PLAYER_TWO:
+                    return GameState.PLAYER_TWO_WIN;
+                case EMPTY:
+                    throw new InconsistentBoardStateException();
+            }
+        } else if (checkTiedGame(boardState.getDiscs())) {
+            return GameState.TIE;
         }
+
+
 
 
         return GameState.ACTIVE;
@@ -77,20 +90,17 @@ public class BoardService {
 
     }
 
-    protected boolean checkActiveGame(Disc[][] discs) {
+    protected boolean checkWinningGame(Disc[][] discs) {
+
+        return checkColumnWin(discs) || checkRowWin(discs);
+
+    }
+
+    protected boolean checkTiedGame(Disc[][] discs) {
         return Arrays
                 .stream(discs)
                 .flatMap(Arrays::stream)
-                .anyMatch(disc -> disc.equals(Disc.EMPTY));
-    }
-
-    protected boolean checkFinishedGame(Disc[][] discs) {
-
-        if (checkColumnWin(discs) || checkRowWin(discs)) {
-            return true;
-        }
-
-        return false;
+                .noneMatch(disc -> disc.equals(Disc.EMPTY));
     }
 
     protected boolean checkColumnWin(Disc[][] discs) {

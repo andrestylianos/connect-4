@@ -31,37 +31,34 @@ public class RedisServiceTest {
     @Test
     public void shouldAllowSettingAndGettingAValue() throws Exception {
 
-        PlayerMove move = new PlayerMove(Disc.PLAYER_ONE, 0);
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
         for(Disc[] discRow: discs){
             Arrays.fill(discRow, Disc.EMPTY);
         }
 
-        BoardState boardState = new BoardState(boardSize, discs, Disc.PLAYER_ONE, GameState.PLAYER_ONE_WIN);
+        BoardState boardState = new BoardState(UUID.randomUUID(), boardSize, discs, Disc.PLAYER_ONE, GameState.PLAYER_ONE_WIN);
 
-        String key = UUID.randomUUID().toString();
-        redisService.upsertValue(key, boardState);
+        redisService.upsertValue(boardState.getId().toString(), boardState);
 
-        assertEquals(redisService.getValue(key, BoardState.class), boardState);
+        assertEquals(redisService.getValue(boardState.getId().toString(), BoardState.class), boardState);
     }
 
     @Test
     public void shouldAllowUpdatingAValue() throws Exception {
 
-        PlayerMove move = new PlayerMove(Disc.PLAYER_ONE, 0);
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
         for(Disc[] discRow: discs){
             Arrays.fill(discRow, Disc.EMPTY);
         }
 
-        BoardState boardState = new BoardState(boardSize, discs, Disc.PLAYER_ONE, GameState.ACTIVE);
-        BoardState updatedState = new BoardState(boardSize, discs, Disc.PLAYER_ONE, GameState.PLAYER_ONE_WIN);
+        BoardState boardState = new BoardState(UUID.randomUUID(), boardSize, discs, Disc.PLAYER_ONE, GameState.ACTIVE);
+        BoardState updatedState = new BoardState(boardState.getId(), boardSize, discs, Disc.PLAYER_ONE, GameState.PLAYER_ONE_WIN);
 
-        String key = UUID.randomUUID().toString();
-        redisService.upsertValue(key, boardState);
-        redisService.upsertValue(key, updatedState);
 
-        assertEquals(redisService.getValue(key, BoardState.class), updatedState);
+        redisService.upsertValue(boardState.getId().toString(), boardState);
+        redisService.upsertValue(boardState.getId().toString(), updatedState);
+
+        assertEquals(redisService.getValue(boardState.getId().toString(), BoardState.class), updatedState);
     }
 
 }

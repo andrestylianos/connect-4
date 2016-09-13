@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static org.junit.Assert.*;
@@ -55,7 +56,7 @@ public class BoardServiceTest {
         PlayerMove move = new PlayerMove(Disc.PLAYER_ONE, 0);
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
         Arrays.fill(discs[0],Disc.PLAYER_TWO);
-        BoardState boardState = new BoardState(boardSize, discs, Disc.PLAYER_TWO, GameState.ACTIVE);
+        BoardState boardState = new BoardState(UUID.randomUUID(), boardSize, discs, Disc.PLAYER_TWO, GameState.ACTIVE);
 
         assertFalse("Player should not be able to add disc to a full column", boardService.validateMove(move, boardState));
     }
@@ -69,7 +70,7 @@ public class BoardServiceTest {
             Arrays.fill(discRow, Disc.EMPTY);
         }
 
-        BoardState boardState = new BoardState(boardSize, discs, Disc.PLAYER_ONE, GameState.ACTIVE);
+        BoardState boardState = new BoardState(UUID.randomUUID(), boardSize, discs, Disc.PLAYER_ONE, GameState.ACTIVE);
 
         assertFalse("Player should not be able to play two times in a row", boardService.validateMove(move, boardState));
     }
@@ -83,7 +84,7 @@ public class BoardServiceTest {
             Arrays.fill(discRow, Disc.EMPTY);
         }
 
-        BoardState boardState = new BoardState(boardSize, discs, Disc.PLAYER_ONE, GameState.PLAYER_ONE_WIN);
+        BoardState boardState = new BoardState(UUID.randomUUID(), boardSize, discs, Disc.PLAYER_ONE, GameState.PLAYER_ONE_WIN);
         boardService.validateMove(move, boardState);
     }
 
@@ -97,7 +98,7 @@ public class BoardServiceTest {
         Arrays.fill(discs[0],Disc.PLAYER_TWO);
         discs[0][boardSize.getVerticalSize()-1] = Disc.EMPTY;
 
-        BoardState boardState = new BoardState(boardSize, discs, Disc.PLAYER_TWO, GameState.ACTIVE);
+        BoardState boardState = new BoardState(UUID.randomUUID(), boardSize, discs, Disc.PLAYER_TWO, GameState.ACTIVE);
 
         assertTrue("Player should be able to make a move that is valid", boardService.validateMove(move, boardState));
     }
@@ -108,7 +109,7 @@ public class BoardServiceTest {
         PlayerMove move = new PlayerMove(Disc.PLAYER_ONE, 0);
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
         Arrays.fill(discs[0],Disc.PLAYER_TWO);
-        BoardState boardState = new BoardState(boardSize, discs, Disc.PLAYER_TWO, GameState.ACTIVE);
+        BoardState boardState = new BoardState(UUID.randomUUID(), boardSize, discs, Disc.PLAYER_TWO, GameState.ACTIVE);
         boardService.doPlayerMove(move, boardState);
     }
 
@@ -121,10 +122,10 @@ public class BoardServiceTest {
         Arrays.fill(discs[0],Disc.PLAYER_TWO);
         discs[0][boardSize.getVerticalSize()-1] = Disc.EMPTY;
 
-        BoardState boardState = new BoardState(boardSize, discs, Disc.PLAYER_TWO, GameState.ACTIVE);
+        BoardState boardState = new BoardState(UUID.randomUUID(), boardSize, discs, Disc.PLAYER_TWO, GameState.ACTIVE);
 
         BoardService boardServiceSpy = spy(boardService);
-        doReturn(GameState.ACTIVE).when(boardServiceSpy).classifyState(any(BoardState.class));
+        doReturn(GameState.ACTIVE).when(boardServiceSpy).classifyState(any(BoardState.class), any(Disc.class));
 
         BoardState nextState = boardServiceSpy.doPlayerMove(move, boardState);
 
@@ -139,7 +140,7 @@ public class BoardServiceTest {
             Arrays.fill(discRow, Disc.EMPTY);
         }
 
-        assertFalse("An empty board should not be classified as finished", boardService.checkFinishedGame(discs));
+        assertFalse("An empty board should not be classified as finished", boardService.checkWinningGame(discs));
     }
 
     @Test

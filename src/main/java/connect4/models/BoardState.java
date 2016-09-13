@@ -5,19 +5,26 @@ import connect4.enums.GameState;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.UUID;
 
 public class BoardState implements Serializable{
 
-    private final BoardSize boardSize;
-    private final Disc[][] discs;
-    private final Disc lastPlayer;
-    private final GameState gameState;
+    private UUID id;
+    private BoardSize boardSize;
+    private Disc[][] discs;
+    private Disc lastPlayer;
+    private GameState gameState;
 
-    public BoardState(BoardSize boardSize, Disc[][] discs, Disc lastPlayer, GameState gameState) {
+    public BoardState(UUID id, BoardSize boardSize, Disc[][] discs, Disc lastPlayer, GameState gameState) {
+        this.id = id;
         this.boardSize = boardSize;
         this.discs = discs;
         this.lastPlayer = lastPlayer;
         this.gameState = gameState;
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public Disc[][] getDiscs() {
@@ -34,6 +41,26 @@ public class BoardState implements Serializable{
 
     public GameState getGameState() {
         return gameState;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setBoardSize(BoardSize boardSize) {
+        this.boardSize = boardSize;
+    }
+
+    public void setDiscs(Disc[][] discs) {
+        this.discs = discs;
+    }
+
+    public void setLastPlayer(Disc lastPlayer) {
+        this.lastPlayer = lastPlayer;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
     }
 
     @Override
