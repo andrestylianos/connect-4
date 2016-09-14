@@ -10,6 +10,7 @@ import connect4.models.BoardState;
 import connect4.models.PlayerMove;
 import connect4.services.BoardService;
 import connect4.services.RedisService;
+import connect4.utils.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,39 +36,42 @@ public class BoardController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        try {
-            boardState = boardService.doPlayerMove(move, boardState);
-            if(boardState.getGameState() != GameState.ACTIVE){
-                redisService.upsertValue(boardState.getId().toString(), boardState);
-                return ResponseEntity.ok(boardState);
-            }
-        } catch (InvalidMoveException e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        } catch (FinishedGameException e) {
-            return new ResponseEntity<>(HttpStatus.GONE);
-        } catch (InconsistentBoardStateException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        Pair<ResponseEntity<BoardState>, BoardState> moveResult = handlePlayerMove(move, boardState);
+        if(moveResult.first != null) {
+            return moveResult.first;
+        } else {
+            boardState = moveResult.second;
         }
-
 
         Player aiPlayer = new RandomPlayer();
 
-        try {
-            boardState = boardService.doPlayerMove(aiPlayer.nextMove(boardState), boardState);
-            if(boardState.getGameState() != GameState.ACTIVE){
-                redisService.upsertValue(boardState.getId().toString(), boardState);
-                return ResponseEntity.ok(boardState);
-            }
-        } catch (InvalidMoveException e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        } catch (FinishedGameException e) {
-            return new ResponseEntity<>(HttpStatus.GONE);
-        } catch (InconsistentBoardStateException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        moveResult = handlePlayerMove(aiPlayer.nextMove(boardState), boardState);
+        if(moveResult.first != null) {
+            return moveResult.first;
+        } else {
+            boardState = moveResult.second;
         }
 
         redisService.upsertValue(boardState.getId().toString(), boardState);
         return ResponseEntity.ok(boardState);
+    }
+
+    private Pair<ResponseEntity<BoardState>, BoardState> handlePlayerMove(PlayerMove move, BoardState boardState) {
+        try {
+            boardState = boardService.doPlayerMove(move, boardState);
+            if(boardState.getGameState() != GameState.ACTIVE){
+                redisService.upsertValue(boardState.getId().toString(), boardState);
+                return new Pair<>(ResponseEntity.ok(boardState), null);
+            } else {
+                return new Pair<>(null, boardState);
+            }
+        } catch (InvalidMoveException e) {
+            return new Pair<>(new ResponseEntity<>(HttpStatus.CONFLICT), null);
+        } catch (FinishedGameException e) {
+            return new Pair<>(new ResponseEntity<>(HttpStatus.GONE), null);
+        } catch (InconsistentBoardStateException e) {
+            return new Pair<>(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR), null);
+        }
     }
 
 }
