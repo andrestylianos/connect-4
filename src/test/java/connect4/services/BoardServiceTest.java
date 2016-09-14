@@ -191,4 +191,52 @@ public class BoardServiceTest {
         assertFalse("An unfinished board should not be checked as a win", boardService.checkRowWin(discs));
     }
 
+    @Test
+    public void checkFirstDiagWinShouldReturnTrueIfWin() throws Exception {
+        Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
+        for(Disc[] discRow: discs){
+            Arrays.fill(discRow, Disc.EMPTY);
+        }
+
+        IntStream.range(0,4).forEach(i -> discs[i][i] = Disc.PLAYER_ONE);
+
+        assertTrue("A winning board should be checked as a win", boardService.checkFirstDiagWin(discs));
+    }
+
+    @Test
+    public void checkFirstDiagWinShouldReturnFalseIfActive() throws Exception {
+        Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
+        for(Disc[] discRow: discs){
+            Arrays.fill(discRow, Disc.EMPTY);
+        }
+
+        IntStream.range(0,3).forEach(i -> discs[i][i] = Disc.PLAYER_ONE);
+
+        assertFalse("An unfinished board should not be checked as a win", boardService.checkFirstDiagWin(discs));
+    }
+
+    @Test
+    public void checkSecondDiagWinShouldReturnTrueIfWin() throws Exception {
+        Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
+        for(Disc[] discRow: discs){
+            Arrays.fill(discRow, Disc.EMPTY);
+        }
+
+        IntStream.range(2,6).forEach(i -> discs[i][boardSize.getVerticalSize()-i] = Disc.PLAYER_ONE);
+
+        assertTrue("A winning board should be checked as a win", boardService.checkSecondDiagWin(discs));
+    }
+
+    @Test
+    public void checkSecondDiagWinShouldReturnFalseIfActive() throws Exception {
+        Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
+        for(Disc[] discRow: discs){
+            Arrays.fill(discRow, Disc.EMPTY);
+        }
+
+        IntStream.range(2,5).forEach(i -> discs[i][boardSize.getVerticalSize()-i] = Disc.PLAYER_ONE);
+
+        assertFalse("An unfinished board should not be checked as a win", boardService.checkSecondDiagWin(discs));
+    }
+
 }

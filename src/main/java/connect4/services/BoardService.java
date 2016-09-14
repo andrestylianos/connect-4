@@ -92,7 +92,7 @@ public class BoardService {
 
     protected boolean checkWinningGame(Disc[][] discs) {
 
-        return checkColumnWin(discs) || checkRowWin(discs);
+        return checkColumnWin(discs) || checkRowWin(discs) || checkFirstDiagWin(discs) || checkSecondDiagWin(discs);
 
     }
 
@@ -125,9 +125,7 @@ public class BoardService {
                         playerTwoCount++;
                         break;
                 }
-                if ((playerOneCount >= 4) || (playerTwoCount >= 4)) {
-                    return true;
-                }
+                if (checkDiscCount(playerOneCount, playerTwoCount)) return true;
 
             }
 
@@ -163,9 +161,7 @@ public class BoardService {
                         break;
                 }
 
-                if ((playerOneCount >= 4) || (playerTwoCount >= 4)) {
-                    return true;
-                }
+                if (checkDiscCount(playerOneCount, playerTwoCount)) return true;
 
             }
 
@@ -184,12 +180,13 @@ public class BoardService {
         int horizontalSize = discs.length;
         int verticalSize = discs[0].length;
 
-        for (int x = 0; x < horizontalSize + verticalSize - 1; x++) {
+        // Traverse diagonals starting on Y axis
+        for(int aux = 0; aux < verticalSize; aux++){
+            int x = 0;
+            int y = aux;
+            while(x<horizontalSize && y<verticalSize) {
 
-            for (int y = 0; y < discs[0].length; y++) {
-                Disc disc = discs[x][y];
-
-                switch (disc) {
+                switch (discs[x][y]) {
                     case EMPTY:
                         playerOneCount = 0;
                         playerTwoCount = 0;
@@ -203,19 +200,113 @@ public class BoardService {
                         playerTwoCount++;
                         break;
                 }
-
-                if ((playerOneCount >= 4) || (playerTwoCount >= 4)) {
-                    return true;
-                }
-
+                if (checkDiscCount(playerOneCount, playerTwoCount)) return true;
+                x++;
+                y++;
             }
-
             playerOneCount = 0;
             playerTwoCount = 0;
+        }
 
+        // Traverse diagonals starting on X axis, skipping [0][0] since it's covered above
+        for(int aux = 1; aux < horizontalSize; aux++){
+            int x = aux;
+            int y = 0;
+            while(x<horizontalSize && y<verticalSize) {
+
+                switch (discs[x][y]) {
+                    case EMPTY:
+                        playerOneCount = 0;
+                        playerTwoCount = 0;
+                        break;
+                    case PLAYER_ONE:
+                        playerOneCount++;
+                        playerTwoCount = 0;
+                        break;
+                    case PLAYER_TWO:
+                        playerOneCount = 0;
+                        playerTwoCount++;
+                        break;
+                }
+                if (checkDiscCount(playerOneCount, playerTwoCount)) return true;
+                x++;
+                y++;
+            }
+            playerOneCount = 0;
+            playerTwoCount = 0;
         }
 
         return false;
+    }
+
+    protected boolean checkSecondDiagWin(Disc[][] discs) {
+        int playerOneCount = 0;
+        int playerTwoCount = 0;
+
+        int horizontalSize = discs.length;
+        int verticalSize = discs[0].length;
+
+        // Traverse diagonals starting on Y axis
+        for(int aux = 0; aux < verticalSize; aux++){
+            int x = horizontalSize - 1;
+            int y = aux;
+            while(x>=0 && y<verticalSize) {
+
+                switch (discs[x][y]) {
+                    case EMPTY:
+                        playerOneCount = 0;
+                        playerTwoCount = 0;
+                        break;
+                    case PLAYER_ONE:
+                        playerOneCount++;
+                        playerTwoCount = 0;
+                        break;
+                    case PLAYER_TWO:
+                        playerOneCount = 0;
+                        playerTwoCount++;
+                        break;
+                }
+                if (checkDiscCount(playerOneCount, playerTwoCount)) return true;
+                x--;
+                y++;
+            }
+            playerOneCount = 0;
+            playerTwoCount = 0;
+        }
+
+        // Traverse diagonals starting on X axis, skipping [horizontalSize - 1][0] since it's covered above
+        for(int aux = 0; aux < horizontalSize - 1; aux++){
+            int x = aux;
+            int y = 0;
+            while(x>=0 && y<verticalSize) {
+
+                switch (discs[x][y]) {
+                    case EMPTY:
+                        playerOneCount = 0;
+                        playerTwoCount = 0;
+                        break;
+                    case PLAYER_ONE:
+                        playerOneCount++;
+                        playerTwoCount = 0;
+                        break;
+                    case PLAYER_TWO:
+                        playerOneCount = 0;
+                        playerTwoCount++;
+                        break;
+                }
+                if (checkDiscCount(playerOneCount, playerTwoCount)) return true;
+                x--;
+                y++;
+            }
+            playerOneCount = 0;
+            playerTwoCount = 0;
+        }
+
+        return false;
+    }
+
+    private boolean checkDiscCount(int playerOneCount, int playerTwoCount) {
+        return (playerOneCount >= 4) || (playerTwoCount >= 4);
     }
 
 }
