@@ -9,6 +9,7 @@ import connect4.models.BoardSize;
 import connect4.models.BoardState;
 import connect4.enums.Disc;
 import connect4.models.PlayerMove;
+import connect4.utils.Pair;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -237,6 +238,33 @@ public class BoardServiceTest {
         IntStream.range(2, 5).forEach(i -> discs[i][boardSize.getVerticalSize() - i] = Disc.PLAYER_ONE);
 
         assertFalse("An unfinished board should not be checked as a win", boardService.checkSecondDiagWin(discs));
+    }
+
+    @Test
+    public void checkDiscCountShouldReturnZeroedCountIfEmpty() throws Exception {
+
+        Pair<Integer, Integer> actualPair = boardService.countNewDisc(new Pair<>(0, 1), Disc.EMPTY);
+        Pair<Integer, Integer> expectedPair = new Pair<>(0, 0);
+
+        assertEquals("If reaching an empty disk it should return a zero pair", actualPair, expectedPair);
+    }
+
+    @Test
+    public void checkDiscCountShouldReturnIncrementedCountIfPlayerOne() throws Exception {
+
+        Pair<Integer, Integer> actualPair = boardService.countNewDisc(new Pair<>(0, 1), Disc.PLAYER_ONE);
+        Pair<Integer, Integer> expectedPair = new Pair<>(1, 0);
+
+        assertEquals("If reaching a player one disk it should return an incremented pair", actualPair, expectedPair);
+    }
+
+    @Test
+    public void checkDiscCountShouldReturnIncrementedCountIfPlayerTwo() throws Exception {
+
+        Pair<Integer, Integer> actualPair = boardService.countNewDisc(new Pair<>(1, 0), Disc.PLAYER_TWO);
+        Pair<Integer, Integer> expectedPair = new Pair<>(0, 1);
+
+        assertEquals("If reaching a player two disk it should return an incremented pair", actualPair, expectedPair);
     }
 
 }
