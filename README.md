@@ -16,7 +16,7 @@ This project has been developed with Spring Boot using Gradle as the build tool.
 
 #### Dependencies ####
 * Java 8
-* Redis (using default "localhost" and port 6379, should later be moved to application.properties)
+* Redis (using default "localhost" and port 6379, should later be moved to application.properties or use ENV variables)
 
 #### Testing ####
 
@@ -26,6 +26,7 @@ This project has been developed with Spring Boot using Gradle as the build tool.
 #### Development ####
 
 * For running the server `./gradlew bootRun`, if used together with `./gradlew build --continuous` changes to source files will trigger a compilation and reload the server.
+* To run from jar `./gradlew build && java -jar build/libs/connect-4-0.1.0.jar`
 
 #### API ####
 
