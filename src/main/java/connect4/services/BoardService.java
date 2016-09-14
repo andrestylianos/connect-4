@@ -66,7 +66,6 @@ public class BoardService {
             return GameState.TIE;
         }
 
-
         return GameState.ACTIVE;
     }
 

@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -27,18 +28,19 @@ public class BoardController {
     private RedisService redisService;
 
     @RequestMapping(path = "play/{boardId}", method = RequestMethod.PUT, produces = "application/json")
-    public ResponseEntity<BoardState> play(@PathVariable String boardId, @RequestBody PlayerMove move){
+    public ResponseEntity<BoardState> play(@PathVariable String boardId, @RequestBody PlayerMove move) {
 
-        BoardState boardState = redisService.getValue(UUID.fromString(boardId).toString(), BoardState.class);
+        Optional<BoardState> optBoardState = redisService.getValue(UUID.fromString(boardId).toString(), BoardState.class);
 
-        if(boardState == null){
+        if (!optBoardState.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
+        BoardState boardState = optBoardState.get();
         try {
             boardState = boardService.doPlayerMove(move, boardState);
-            if(boardState.getGameState() != GameState.ACTIVE){
-                redisService.upsertValue(boardState.getId().toString(), boardState);
+            if (boardState.getGameState() != GameState.ACTIVE) {
+                redisService.removeValue(boardState.getId().toString());
                 return ResponseEntity.ok(boardState);
             }
         } catch (InvalidMoveException e) {
@@ -49,13 +51,12 @@ public class BoardController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-
         Player aiPlayer = new RandomPlayer();
 
         try {
             boardState = boardService.doPlayerMove(aiPlayer.nextMove(boardState), boardState);
-            if(boardState.getGameState() != GameState.ACTIVE){
-                redisService.upsertValue(boardState.getId().toString(), boardState);
+            if (boardState.getGameState() != GameState.ACTIVE) {
+                redisService.removeValue(boardState.getId().toString());
                 return ResponseEntity.ok(boardState);
             }
         } catch (InvalidMoveException e) {

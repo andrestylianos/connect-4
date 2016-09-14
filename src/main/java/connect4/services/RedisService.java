@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -16,7 +17,11 @@ public class RedisService {
         redisTemplate.opsForValue().set(key, value);
     }
 
-    public <T> T getValue(String key, Class<T> type) {
-        return (T) redisTemplate.opsForValue().get(key);
+    public <T> Optional<T> getValue(String key, Class<T> type) {
+        return Optional.ofNullable(type.cast(redisTemplate.opsForValue().get(key)));
+    }
+
+    public void removeValue(String key) {
+        redisTemplate.delete(key);
     }
 }

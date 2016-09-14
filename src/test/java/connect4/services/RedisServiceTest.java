@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.rmi.UnexpectedException;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
@@ -40,7 +41,7 @@ public class RedisServiceTest {
 
         redisService.upsertValue(boardState.getId().toString(), boardState);
 
-        assertEquals(redisService.getValue(boardState.getId().toString(), BoardState.class), boardState);
+        assertEquals(redisService.getValue(boardState.getId().toString(), BoardState.class), Optional.of(boardState));
     }
 
     @Test
@@ -54,11 +55,26 @@ public class RedisServiceTest {
         BoardState boardState = new BoardState(UUID.randomUUID(), boardSize, discs, Disc.PLAYER_ONE, GameState.ACTIVE);
         BoardState updatedState = new BoardState(boardState.getId(), boardSize, discs, Disc.PLAYER_ONE, GameState.PLAYER_ONE_WIN);
 
-
         redisService.upsertValue(boardState.getId().toString(), boardState);
         redisService.upsertValue(boardState.getId().toString(), updatedState);
 
-        assertEquals(redisService.getValue(boardState.getId().toString(), BoardState.class), updatedState);
+        assertEquals(redisService.getValue(boardState.getId().toString(), BoardState.class), Optional.of(updatedState));
+    }
+
+    @Test
+    public void shouldAllowRemovingAValue() throws Exception {
+
+        Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
+        for (Disc[] discRow : discs) {
+            Arrays.fill(discRow, Disc.EMPTY);
+        }
+
+        BoardState boardState = new BoardState(UUID.randomUUID(), boardSize, discs, Disc.PLAYER_ONE, GameState.ACTIVE);
+
+        redisService.upsertValue(boardState.getId().toString(), boardState);
+        redisService.removeValue(boardState.getId().toString());
+
+        assertEquals(redisService.getValue(boardState.getId().toString(), BoardState.class), Optional.empty());
     }
 
 }
