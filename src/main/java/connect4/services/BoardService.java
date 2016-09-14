@@ -8,6 +8,7 @@ import connect4.models.BoardSize;
 import connect4.models.BoardState;
 import connect4.enums.Disc;
 import connect4.models.PlayerMove;
+import connect4.utils.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -94,76 +95,50 @@ public class BoardService {
     }
 
     protected boolean checkTiedGame(Disc[][] discs) {
+
         return Arrays
                 .stream(discs)
                 .flatMap(Arrays::stream)
                 .noneMatch(disc -> disc.equals(Disc.EMPTY));
+
     }
 
     protected boolean checkColumnWin(Disc[][] discs) {
-        int playerOneCount = 0;
-        int playerTwoCount = 0;
+
+        Pair<Integer, Integer> playerDiscs = new Pair<>(0, 0);
 
         for (Disc[] discColumn : discs) {
 
             for (Disc disc : discColumn) {
 
-                switch (disc) {
-                    case EMPTY:
-                        playerOneCount = 0;
-                        playerTwoCount = 0;
-                        break;
-                    case PLAYER_ONE:
-                        playerOneCount++;
-                        playerTwoCount = 0;
-                        break;
-                    case PLAYER_TWO:
-                        playerOneCount = 0;
-                        playerTwoCount++;
-                        break;
-                }
-                if (checkDiscCount(playerOneCount, playerTwoCount)) return true;
+                playerDiscs = countNewDisc(playerDiscs, disc);
+                if (checkDiscCount(playerDiscs)) return true;
 
             }
 
-            playerOneCount = 0;
-            playerTwoCount = 0;
+            playerDiscs = new Pair<>(0, 0);
 
         }
 
         return false;
     }
 
+
     protected boolean checkRowWin(Disc[][] discs) {
-        int playerOneCount = 0;
-        int playerTwoCount = 0;
+
+        Pair<Integer, Integer> playerDiscs = new Pair<>(0, 0);
 
         for (int y = 0; y < discs[0].length; y++) {
 
             for (Disc[] discRow : discs) {
                 Disc disc = discRow[y];
 
-                switch (disc) {
-                    case EMPTY:
-                        playerOneCount = 0;
-                        playerTwoCount = 0;
-                        break;
-                    case PLAYER_ONE:
-                        playerOneCount++;
-                        playerTwoCount = 0;
-                        break;
-                    case PLAYER_TWO:
-                        playerOneCount = 0;
-                        playerTwoCount++;
-                        break;
-                }
-
-                if (checkDiscCount(playerOneCount, playerTwoCount)) return true;
+                playerDiscs = countNewDisc(playerDiscs, disc);
+                if (checkDiscCount(playerDiscs)) return true;
 
             }
 
-            playerOneCount = 0;
-            playerTwoCount = 0;
+            playerDiscs = new Pair<>(0, 0);
 
         }
 
@@ -171,139 +146,115 @@ public class BoardService {
     }
 
     protected boolean checkFirstDiagWin(Disc[][] discs) {
-        int playerOneCount = 0;
-        int playerTwoCount = 0;
+
+        Pair<Integer, Integer> playerDiscs = new Pair<>(0, 0);
 
         int horizontalSize = discs.length;
         int verticalSize = discs[0].length;
 
         // Traverse diagonals starting on Y axis
         for (int aux = 0; aux < verticalSize; aux++) {
+
             int x = 0;
             int y = aux;
+
             while (x < horizontalSize && y < verticalSize) {
 
-                switch (discs[x][y]) {
-                    case EMPTY:
-                        playerOneCount = 0;
-                        playerTwoCount = 0;
-                        break;
-                    case PLAYER_ONE:
-                        playerOneCount++;
-                        playerTwoCount = 0;
-                        break;
-                    case PLAYER_TWO:
-                        playerOneCount = 0;
-                        playerTwoCount++;
-                        break;
-                }
-                if (checkDiscCount(playerOneCount, playerTwoCount)) return true;
+                Disc disc = discs[x][y];
+                playerDiscs = countNewDisc(playerDiscs, disc);
+                if (checkDiscCount(playerDiscs)) return true;
                 x++;
                 y++;
             }
-            playerOneCount = 0;
-            playerTwoCount = 0;
+
+            playerDiscs = new Pair<>(0, 0);
+
         }
 
-        // Traverse diagonals starting on X axis, skipping [0][0] since it's covered above
+        // Traverse diagonals starting on X axis, skipping [0][0] since it'first covered above
         for (int aux = 1; aux < horizontalSize; aux++) {
+
             int x = aux;
             int y = 0;
+
             while (x < horizontalSize && y < verticalSize) {
 
-                switch (discs[x][y]) {
-                    case EMPTY:
-                        playerOneCount = 0;
-                        playerTwoCount = 0;
-                        break;
-                    case PLAYER_ONE:
-                        playerOneCount++;
-                        playerTwoCount = 0;
-                        break;
-                    case PLAYER_TWO:
-                        playerOneCount = 0;
-                        playerTwoCount++;
-                        break;
-                }
-                if (checkDiscCount(playerOneCount, playerTwoCount)) return true;
+                Disc disc = discs[x][y];
+                playerDiscs = countNewDisc(playerDiscs, disc);
+                if (checkDiscCount(playerDiscs)) return true;
                 x++;
                 y++;
             }
-            playerOneCount = 0;
-            playerTwoCount = 0;
+
+            playerDiscs = new Pair<>(0, 0);
         }
 
         return false;
     }
 
     protected boolean checkSecondDiagWin(Disc[][] discs) {
-        int playerOneCount = 0;
-        int playerTwoCount = 0;
+
+        Pair<Integer, Integer> playerDiscs = new Pair<>(0, 0);
 
         int horizontalSize = discs.length;
         int verticalSize = discs[0].length;
 
         // Traverse diagonals starting on Y axis
         for (int aux = 0; aux < verticalSize; aux++) {
+
             int x = horizontalSize - 1;
             int y = aux;
+
             while (x >= 0 && y < verticalSize) {
 
-                switch (discs[x][y]) {
-                    case EMPTY:
-                        playerOneCount = 0;
-                        playerTwoCount = 0;
-                        break;
-                    case PLAYER_ONE:
-                        playerOneCount++;
-                        playerTwoCount = 0;
-                        break;
-                    case PLAYER_TWO:
-                        playerOneCount = 0;
-                        playerTwoCount++;
-                        break;
-                }
-                if (checkDiscCount(playerOneCount, playerTwoCount)) return true;
+                Disc disc = discs[x][y];
+                playerDiscs = countNewDisc(playerDiscs, disc);
+                if (checkDiscCount(playerDiscs)) return true;
                 x--;
                 y++;
             }
-            playerOneCount = 0;
-            playerTwoCount = 0;
+
+            playerDiscs = new Pair<>(0, 0);
         }
 
-        // Traverse diagonals starting on X axis, skipping [horizontalSize - 1][0] since it's covered above
+        // Traverse diagonals starting on X axis, skipping [horizontalSize - 1][0] since it'first covered above
         for (int aux = 0; aux < horizontalSize - 1; aux++) {
+
             int x = aux;
             int y = 0;
+
             while (x >= 0 && y < verticalSize) {
 
-                switch (discs[x][y]) {
-                    case EMPTY:
-                        playerOneCount = 0;
-                        playerTwoCount = 0;
-                        break;
-                    case PLAYER_ONE:
-                        playerOneCount++;
-                        playerTwoCount = 0;
-                        break;
-                    case PLAYER_TWO:
-                        playerOneCount = 0;
-                        playerTwoCount++;
-                        break;
-                }
-                if (checkDiscCount(playerOneCount, playerTwoCount)) return true;
+                Disc disc = discs[x][y];
+                playerDiscs = countNewDisc(playerDiscs, disc);
+                if (checkDiscCount(playerDiscs)) return true;
                 x--;
                 y++;
             }
-            playerOneCount = 0;
-            playerTwoCount = 0;
+
+            playerDiscs = new Pair<>(0, 0);
         }
 
         return false;
     }
 
-    private boolean checkDiscCount(int playerOneCount, int playerTwoCount) {
-        return (playerOneCount >= 4) || (playerTwoCount >= 4);
+    protected Pair<Integer, Integer> countNewDisc(Pair<Integer, Integer> playerDiscs, Disc disc) {
+        switch (disc) {
+            case EMPTY:
+                playerDiscs = new Pair<>(0, 0);
+                break;
+            case PLAYER_ONE:
+                playerDiscs = new Pair<>(playerDiscs.first + 1, 0);
+                break;
+            case PLAYER_TWO:
+                playerDiscs = new Pair<>(0, playerDiscs.second + 1);
+                break;
+        }
+        return playerDiscs;
+    }
+
+    private boolean checkDiscCount(Pair<Integer, Integer> discsCount) {
+        return (discsCount.first >= 4) || (discsCount.second >= 4);
     }
 
 }
