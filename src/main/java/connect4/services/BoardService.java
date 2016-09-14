@@ -54,7 +54,7 @@ public class BoardService {
     public GameState classifyState(BoardState boardState, Disc player) throws InconsistentBoardStateException {
 
         if (checkWinningGame(boardState.getDiscs())) {
-            switch (player){
+            switch (player) {
                 case PLAYER_ONE:
                     return GameState.PLAYER_ONE_WIN;
                 case PLAYER_TWO:
@@ -65,8 +65,6 @@ public class BoardService {
         } else if (checkTiedGame(boardState.getDiscs())) {
             return GameState.TIE;
         }
-
-
 
 
         return GameState.ACTIVE;
@@ -181,10 +179,10 @@ public class BoardService {
         int verticalSize = discs[0].length;
 
         // Traverse diagonals starting on Y axis
-        for(int aux = 0; aux < verticalSize; aux++){
+        for (int aux = 0; aux < verticalSize; aux++) {
             int x = 0;
             int y = aux;
-            while(x<horizontalSize && y<verticalSize) {
+            while (x < horizontalSize && y < verticalSize) {
 
                 switch (discs[x][y]) {
                     case EMPTY:
@@ -209,10 +207,10 @@ public class BoardService {
         }
 
         // Traverse diagonals starting on X axis, skipping [0][0] since it's covered above
-        for(int aux = 1; aux < horizontalSize; aux++){
+        for (int aux = 1; aux < horizontalSize; aux++) {
             int x = aux;
             int y = 0;
-            while(x<horizontalSize && y<verticalSize) {
+            while (x < horizontalSize && y < verticalSize) {
 
                 switch (discs[x][y]) {
                     case EMPTY:
@@ -247,10 +245,10 @@ public class BoardService {
         int verticalSize = discs[0].length;
 
         // Traverse diagonals starting on Y axis
-        for(int aux = 0; aux < verticalSize; aux++){
+        for (int aux = 0; aux < verticalSize; aux++) {
             int x = horizontalSize - 1;
             int y = aux;
-            while(x>=0 && y<verticalSize) {
+            while (x >= 0 && y < verticalSize) {
 
                 switch (discs[x][y]) {
                     case EMPTY:
@@ -275,10 +273,10 @@ public class BoardService {
         }
 
         // Traverse diagonals starting on X axis, skipping [horizontalSize - 1][0] since it's covered above
-        for(int aux = 0; aux < horizontalSize - 1; aux++){
+        for (int aux = 0; aux < horizontalSize - 1; aux++) {
             int x = aux;
             int y = 0;
-            while(x>=0 && y<verticalSize) {
+            while (x >= 0 && y < verticalSize) {
 
                 switch (discs[x][y]) {
                     case EMPTY:

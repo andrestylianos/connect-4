@@ -55,7 +55,7 @@ public class BoardServiceTest {
 
         PlayerMove move = new PlayerMove(Disc.PLAYER_ONE, 0);
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
-        Arrays.fill(discs[0],Disc.PLAYER_TWO);
+        Arrays.fill(discs[0], Disc.PLAYER_TWO);
         BoardState boardState = new BoardState(UUID.randomUUID(), boardSize, discs, Disc.PLAYER_TWO, GameState.ACTIVE);
 
         assertFalse("Player should not be able to add disc to a full column", boardService.validateMove(move, boardState));
@@ -66,7 +66,7 @@ public class BoardServiceTest {
 
         PlayerMove move = new PlayerMove(Disc.PLAYER_ONE, 0);
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
-        for(Disc[] discRow: discs){
+        for (Disc[] discRow : discs) {
             Arrays.fill(discRow, Disc.EMPTY);
         }
 
@@ -80,7 +80,7 @@ public class BoardServiceTest {
 
         PlayerMove move = new PlayerMove(Disc.PLAYER_ONE, 0);
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
-        for(Disc[] discRow: discs){
+        for (Disc[] discRow : discs) {
             Arrays.fill(discRow, Disc.EMPTY);
         }
 
@@ -95,8 +95,8 @@ public class BoardServiceTest {
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
 
         // Leave the column with one spot left
-        Arrays.fill(discs[0],Disc.PLAYER_TWO);
-        discs[0][boardSize.getVerticalSize()-1] = Disc.EMPTY;
+        Arrays.fill(discs[0], Disc.PLAYER_TWO);
+        discs[0][boardSize.getVerticalSize() - 1] = Disc.EMPTY;
 
         BoardState boardState = new BoardState(UUID.randomUUID(), boardSize, discs, Disc.PLAYER_TWO, GameState.ACTIVE);
 
@@ -104,11 +104,11 @@ public class BoardServiceTest {
     }
 
     @Test(expected = InvalidMoveException.class)
-    public void doPlayerMoveShouldThrowExceptionOnInvalidMove() throws Exception{
+    public void doPlayerMoveShouldThrowExceptionOnInvalidMove() throws Exception {
 
         PlayerMove move = new PlayerMove(Disc.PLAYER_ONE, 0);
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
-        Arrays.fill(discs[0],Disc.PLAYER_TWO);
+        Arrays.fill(discs[0], Disc.PLAYER_TWO);
         BoardState boardState = new BoardState(UUID.randomUUID(), boardSize, discs, Disc.PLAYER_TWO, GameState.ACTIVE);
         boardService.doPlayerMove(move, boardState);
     }
@@ -119,8 +119,8 @@ public class BoardServiceTest {
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
 
         // Leave the column with one spot left
-        Arrays.fill(discs[0],Disc.PLAYER_TWO);
-        discs[0][boardSize.getVerticalSize()-1] = Disc.EMPTY;
+        Arrays.fill(discs[0], Disc.PLAYER_TWO);
+        discs[0][boardSize.getVerticalSize() - 1] = Disc.EMPTY;
 
         BoardState boardState = new BoardState(UUID.randomUUID(), boardSize, discs, Disc.PLAYER_TWO, GameState.ACTIVE);
 
@@ -129,14 +129,14 @@ public class BoardServiceTest {
 
         BoardState nextState = boardServiceSpy.doPlayerMove(move, boardState);
 
-        assertEquals("Service should update the board after applying the move", Disc.PLAYER_ONE, nextState.getDiscs()[0][boardSize.getVerticalSize()-1]);
+        assertEquals("Service should update the board after applying the move", Disc.PLAYER_ONE, nextState.getDiscs()[0][boardSize.getVerticalSize() - 1]);
         assertEquals("Service should update the last player", Disc.PLAYER_ONE, nextState.getLastPlayer());
     }
 
     @Test
     public void checkFinishedGameShouldReturnFalseIfActive() throws Exception {
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
-        for(Disc[] discRow: discs){
+        for (Disc[] discRow : discs) {
             Arrays.fill(discRow, Disc.EMPTY);
         }
 
@@ -146,11 +146,11 @@ public class BoardServiceTest {
     @Test
     public void checkColumnWinShouldReturnTrueIfWin() throws Exception {
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
-        for(Disc[] discRow: discs){
+        for (Disc[] discRow : discs) {
             Arrays.fill(discRow, Disc.EMPTY);
         }
 
-        IntStream.range(2,6).forEach(i -> discs[2][i] = Disc.PLAYER_ONE);
+        IntStream.range(2, 6).forEach(i -> discs[2][i] = Disc.PLAYER_ONE);
 
         assertTrue("A winning board should be checked as a win", boardService.checkColumnWin(discs));
     }
@@ -158,11 +158,11 @@ public class BoardServiceTest {
     @Test
     public void checkColumnWinShouldReturnFalseIfActive() throws Exception {
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
-        for(Disc[] discRow: discs){
+        for (Disc[] discRow : discs) {
             Arrays.fill(discRow, Disc.EMPTY);
         }
 
-        IntStream.range(2,5).forEach(i -> discs[2][i] = Disc.PLAYER_ONE);
+        IntStream.range(2, 5).forEach(i -> discs[2][i] = Disc.PLAYER_ONE);
 
         assertFalse("An unfinished board should not be checked as a win", boardService.checkColumnWin(discs));
     }
@@ -170,11 +170,11 @@ public class BoardServiceTest {
     @Test
     public void checkRowWinShouldReturnTrueIfWin() throws Exception {
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
-        for(Disc[] discRow: discs){
+        for (Disc[] discRow : discs) {
             Arrays.fill(discRow, Disc.EMPTY);
         }
 
-        IntStream.range(2,6).forEach(i -> discs[i][3] = Disc.PLAYER_ONE);
+        IntStream.range(2, 6).forEach(i -> discs[i][3] = Disc.PLAYER_ONE);
 
         assertTrue("A winning board should be checked as a win", boardService.checkRowWin(discs));
     }
@@ -182,11 +182,11 @@ public class BoardServiceTest {
     @Test
     public void checkRowWinShouldReturnFalseIfActive() throws Exception {
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
-        for(Disc[] discRow: discs){
+        for (Disc[] discRow : discs) {
             Arrays.fill(discRow, Disc.EMPTY);
         }
 
-        IntStream.range(2,5).forEach(i -> discs[i][3] = Disc.PLAYER_ONE);
+        IntStream.range(2, 5).forEach(i -> discs[i][3] = Disc.PLAYER_ONE);
 
         assertFalse("An unfinished board should not be checked as a win", boardService.checkRowWin(discs));
     }
@@ -194,11 +194,11 @@ public class BoardServiceTest {
     @Test
     public void checkFirstDiagWinShouldReturnTrueIfWin() throws Exception {
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
-        for(Disc[] discRow: discs){
+        for (Disc[] discRow : discs) {
             Arrays.fill(discRow, Disc.EMPTY);
         }
 
-        IntStream.range(0,4).forEach(i -> discs[i][i] = Disc.PLAYER_ONE);
+        IntStream.range(0, 4).forEach(i -> discs[i][i] = Disc.PLAYER_ONE);
 
         assertTrue("A winning board should be checked as a win", boardService.checkFirstDiagWin(discs));
     }
@@ -206,11 +206,11 @@ public class BoardServiceTest {
     @Test
     public void checkFirstDiagWinShouldReturnFalseIfActive() throws Exception {
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
-        for(Disc[] discRow: discs){
+        for (Disc[] discRow : discs) {
             Arrays.fill(discRow, Disc.EMPTY);
         }
 
-        IntStream.range(0,3).forEach(i -> discs[i][i] = Disc.PLAYER_ONE);
+        IntStream.range(0, 3).forEach(i -> discs[i][i] = Disc.PLAYER_ONE);
 
         assertFalse("An unfinished board should not be checked as a win", boardService.checkFirstDiagWin(discs));
     }
@@ -218,11 +218,11 @@ public class BoardServiceTest {
     @Test
     public void checkSecondDiagWinShouldReturnTrueIfWin() throws Exception {
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
-        for(Disc[] discRow: discs){
+        for (Disc[] discRow : discs) {
             Arrays.fill(discRow, Disc.EMPTY);
         }
 
-        IntStream.range(2,6).forEach(i -> discs[i][boardSize.getVerticalSize()-i] = Disc.PLAYER_ONE);
+        IntStream.range(2, 6).forEach(i -> discs[i][boardSize.getVerticalSize() - i] = Disc.PLAYER_ONE);
 
         assertTrue("A winning board should be checked as a win", boardService.checkSecondDiagWin(discs));
     }
@@ -230,11 +230,11 @@ public class BoardServiceTest {
     @Test
     public void checkSecondDiagWinShouldReturnFalseIfActive() throws Exception {
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
-        for(Disc[] discRow: discs){
+        for (Disc[] discRow : discs) {
             Arrays.fill(discRow, Disc.EMPTY);
         }
 
-        IntStream.range(2,5).forEach(i -> discs[i][boardSize.getVerticalSize()-i] = Disc.PLAYER_ONE);
+        IntStream.range(2, 5).forEach(i -> discs[i][boardSize.getVerticalSize() - i] = Disc.PLAYER_ONE);
 
         assertFalse("An unfinished board should not be checked as a win", boardService.checkSecondDiagWin(discs));
     }

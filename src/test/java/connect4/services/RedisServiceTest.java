@@ -32,7 +32,7 @@ public class RedisServiceTest {
     public void shouldAllowSettingAndGettingAValue() throws Exception {
 
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
-        for(Disc[] discRow: discs){
+        for (Disc[] discRow : discs) {
             Arrays.fill(discRow, Disc.EMPTY);
         }
 
@@ -47,7 +47,7 @@ public class RedisServiceTest {
     public void shouldAllowUpdatingAValue() throws Exception {
 
         Disc[][] discs = new Disc[boardSize.getHorizontalSize()][boardSize.getVerticalSize()];
-        for(Disc[] discRow: discs){
+        for (Disc[] discRow : discs) {
             Arrays.fill(discRow, Disc.EMPTY);
         }
 

@@ -10,9 +10,9 @@ import java.util.UUID;
 public class RedisService {
 
     @Autowired
-    private RedisTemplate<String,Object> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
-    public void upsertValue(String key, Object value){
+    public void upsertValue(String key, Object value) {
         redisTemplate.opsForValue().set(key, value);
     }
 

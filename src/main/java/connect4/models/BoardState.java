@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.UUID;
 
-public class BoardState implements Serializable{
+public class BoardState implements Serializable {
 
     private UUID id;
     private BoardSize boardSize;
@@ -66,24 +66,24 @@ public class BoardState implements Serializable{
     @Override
     public boolean equals(Object obj) {
 
-        if(!(obj instanceof BoardState)){
+        if (!(obj instanceof BoardState)) {
             return false;
         }
         BoardState boardState = (BoardState) obj;
 
-        if(this.boardSize != boardState.getBoardSize()){
+        if (this.boardSize != boardState.getBoardSize()) {
             return false;
         }
 
-        if(!Arrays.deepEquals(this.discs, boardState.getDiscs())){
+        if (!Arrays.deepEquals(this.discs, boardState.getDiscs())) {
             return false;
         }
 
-        if(this.lastPlayer != boardState.getLastPlayer()){
+        if (this.lastPlayer != boardState.getLastPlayer()) {
             return false;
         }
 
-        if(this.gameState != boardState.gameState) {
+        if (this.gameState != boardState.gameState) {
             return false;
         }
 

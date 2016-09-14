@@ -2,7 +2,7 @@ package connect4.models;
 
 public enum BoardSize {
 
-    SIZE_DEFAULT(7,6);
+    SIZE_DEFAULT(7, 6);
 
     private final int horizontalSize;
     private final int verticalSize;
@@ -12,11 +12,11 @@ public enum BoardSize {
         this.verticalSize = verticalSize;
     }
 
-    public int getHorizontalSize(){
+    public int getHorizontalSize() {
         return this.horizontalSize;
     }
 
-    public int getVerticalSize(){
+    public int getVerticalSize() {
         return this.verticalSize;
     }
 
